@@ -24,34 +24,35 @@ attached to it.
 This is an example game loop:
 
 ```javascript
-var EntityComponentSystem = require("entity-component-system").EntityComponentSystem;
-var EntityPool = require("entity-component-system").EntityPool;
+import EntityComponentSystem, { EntityPool } from 'entity-component-system';
 
-var ecs = new EntityComponentSystem();
+const ecs = new EntityComponentSystem();
 
 function drawBackground(entities, elapsed) { /* ... */ }
 ecs.add(drawBackground);
 
 function drawEntity(entity, elapsed) { /* ... */ }
-ecs.addEach(drawEntity, "sprite"); // only run on entities with a "sprite" component
+ecs.addEach(drawEntity, 'sprite'); // only run on entities with a 'sprite' component
 
-var entities = new EntityPool();
-function spriteFactory() { return { "image": null }; }
-entities.registerComponent("sprite", spriteFactory);
+const entities = new EntityPool();
+function spriteFactory() { return { 'image': null }; }
+entities.registerComponent('sprite', spriteFactory);
 entities.load(/* some JSON */);
 
-var lastTime = -1;
-var render = function(time) {
+const lastTime = -1;
+const render = function(time) {
+  window.requestAnimationFrame(render);
+
   if (this.lastTime === -1) {
     this.lastTime = time;
   }
-  var elapsed = time - this.lastTime;
+
+  const elapsed = time - this.lastTime;
   this.lastTime = time;
 
   ecs.run(entities, elapsed);
-  window.requestAnimationFrame(render);
 };
-window.requestAnimationFrame(render);
+render();
 ```
 
 # EntityComponentSystem
@@ -135,7 +136,7 @@ stuttering caused by garbage collection.
 Creates a new entity, and returns the entity's id.
 
 ```javascript
-var player = entities.create(); // => 1
+const player = entities.create(); // => 1
 ```
 
 ## destroy(id)
@@ -187,8 +188,8 @@ the `onAddComponent` callbacks are fired. If the component already existed, it i
 * `component` is the name of the component to add.
 
 ```javascript
-var sprite = entities.addComponent(player, "sprite");
-sprite.image = "something.png";
+const sprite = entities.addComponent(player, 'sprite');
+sprite.image = 'something.png';
 ```
 
 ## getComponent(id, component)
@@ -199,8 +200,8 @@ Returns the component value for an entity.
 * `component` is the name of the component to get.
 
 ```javascript
-var sprite = entities.getComponent(player, "sprite");
-sprite.image = "something.png";
+const sprite = entities.getComponent(player, 'sprite');
+sprite.image = 'something.png';
 ```
 
 ## setComponent(id, component, value)
@@ -213,7 +214,7 @@ object, use `getComponent` instead.
 * `value` is the primitive value to set.
 
 ```javascript
-entities.setComponent(player, "health", 100);
+entities.setComponent(player, 'health', 100);
 ```
 
 ## removeComponent(id, component)
@@ -225,7 +226,7 @@ for the removed component.
 * `component` is the name of the component to remove.
 
 ```javascript
-entities.removeComponent(player, "health");
+entities.removeComponent(player, 'health');
 ```
 
 ## onAddComponent(component, callback)
@@ -256,7 +257,7 @@ Registers a named search for entities that have all components listed in the
   included in the results.
 
 ```javascript
-entities.registerSearch("collectables", ["size", "collisions"]);
+entities.registerSearch('collectables', ['size', 'collisions']);
 ```
 
 ## find(search)
@@ -268,7 +269,7 @@ Returns a list of entity ids for all entities that match the search. See
   `registerSearch`.
 
 ```javascript
-var collectables = entities.find("collectables"); // => [1, 2, 3, ...]
+const collectables = entities.find('collectables'); // => [1, 2, 3, ...]
 ```
 
 ## load(entities)
